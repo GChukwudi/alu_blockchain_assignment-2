@@ -5,7 +5,7 @@
 #include <openssl/sha.h>
 
 #define MAX_BLOCKS 100
-#define MAX_TRANSACTIONS 10
+#define MAX_TRANSACTIONS 5
 #define MAX_DATA_LEN 256
 #define HASH_SIZE 65
 
@@ -35,13 +35,13 @@ void calculateSHA256(char *input, char output[HASH_SIZE]) {
 
 // === 🔢 Compute Block Hash ===
 void computeBlockHash(Block *block) {
+    char buffer[2048] = {0};
     char transactionsConcat[MAX_TRANSACTIONS * MAX_DATA_LEN] = {0};
+
     for (int i = 0; i < block->transactionCount; i++) {
-        strncat(transactionsConcat, block->transactions[i], MAX_DATA_LEN - 1);
+        strcat(transactionsConcat, block->transactions[i]);
     }
 
-    // Estimate a safe size
-    char buffer[4096] = {0};
     snprintf(buffer, sizeof(buffer), "%d%ld%s%s%d",
              block->index, block->timestamp,
              transactionsConcat,
